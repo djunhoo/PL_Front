@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: PLLAB
+Version: 0.0.1
+Summary: PLLAB
+Home-page: https://github.com/djunhoo/pllab
+Author: tube@smartstudy.co.kr
+Author-email: tube@smartstudy.co.kr
+Maintainer: tube@smartstudy.co.kr
+Maintainer-email: tube@smartstudy.co.kr
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Provides-Extra: dev

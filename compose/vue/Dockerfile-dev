@@ -1,0 +1,11 @@
+FROM djunhoo/python-node:3.6.8
+
+WORKDIR /home/service/pllab/vue
+
+ENV CGO_ENABLED 0
+ENV BABEL_ENV development
+ENV NODE_ENV development
+ENV PORT 3000
+
+ADD compose/vue/start-dev.sh /start-dev.sh
+RUN chmod +x /*.sh

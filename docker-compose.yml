@@ -1,0 +1,63 @@
+
+version: '2.1'
+
+volumes:
+  mysql_data: {}
+  site_packages: {}
+  node_modules: {}
+
+services:
+  mysql:
+    image: mysql:5.6
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=pllab
+      - MYSQL_USER=pllab
+      - MYSQL_PASSWORD=password  
+    ports:
+      - "3306:3306"
+    command: [mysqld, --character-set-server=utf8, --collation-server=utf8_unicode_ci]
+    healthcheck:
+      test: "mysqladmin -uroot -ppassword ping"
+      interval: 3s
+      timeout: 1s
+      retries: 10
+
+  vue:
+    build:
+      context: .
+      dockerfile: ./compose/vue/Dockerfile-dev
+    command: /start-dev.sh
+    environment:
+      - NODE_ENV=development
+      - BABEL_ENV=development
+      - API_HOST=http://127.0.0.1:8000/
+    volumes:
+      - ./:/home/service/pllab
+      - node_modules:/home/service/pllab/vue/node_modules/
+    ports:
+      - "9000:9000"
+
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile-dev
+    command: /start-dev.sh
+
+    volumes:
+      - ./:/home/service/pllab
+      - site_packages:/usr/local/lib/python3.6/site-packages/
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=mysql://pllab:password@mysql:3306/pllab
+
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    links:
+      - mysql
+      - vue
